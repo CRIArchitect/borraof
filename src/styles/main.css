@@ -1,0 +1,18 @@
+/* ═══════════════════════════════════════════════════════════════
+   BORRÃO by CRÏΔ — stylesheet entry
+   Imported once in main.jsx. Order matters: tokens → base →
+   primitives → overlays → feature stylesheets.
+   ═══════════════════════════════════════════════════════════════ */
+@import "./tokens.css";
+@import "./base.css";
+@import "./primitives.css";
+@import "./overlays.css";
+
+@import "./auth.css";
+@import "./shell.css";
+@import "./dashboard.css";
+@import "./companies.css";
+@import "./generate.css";
+@import "./history.css";
+@import "./admin.css";
+@import "./studio.css";

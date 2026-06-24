@@ -1,0 +1,352 @@
+/* ─────────────────────────────────────────────────────────────
+   Borrão — ADMIN slice
+   Segmented tabs, stats grid, responsive tables, keys & data viewer.
+   Consumes global tokens only. Owns the .admin-* namespace.
+   ───────────────────────────────────────────────────────────── */
+
+.admin-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-6);
+  padding-bottom: var(--s-8);
+}
+
+/* ── Segmented control (AdminTabs) ───────────────────────────── */
+.admin-tabs {
+  position: relative;
+  display: flex;
+  gap: var(--s-1);
+  padding: var(--s-1);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  box-shadow: var(--inset-hi);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.admin-tabs::-webkit-scrollbar { display: none; }
+
+.admin-tab {
+  position: relative;
+  flex: 1 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-4);
+  border: none;
+  background: transparent;
+  color: var(--cinza-medio);
+  font-family: var(--font-head);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  border-radius: var(--r-full);
+  cursor: pointer;
+  transition: color var(--d-fast) var(--ease-out-quint);
+  -webkit-tap-highlight-color: transparent;
+}
+.admin-tab:hover { color: var(--prata); }
+.admin-tab.active { color: var(--abismo); }
+.admin-tab:focus-visible {
+  outline: 2px solid var(--fogo);
+  outline-offset: 2px;
+}
+.admin-tab-label { position: relative; z-index: 2; }
+.admin-tab-icon {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+}
+
+.admin-tab-pill {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: var(--r-full);
+  background: var(--fogo);
+  box-shadow: var(--glow-fogo);
+}
+
+/* ── Stats grid (AdminStats) ─────────────────────────────────── */
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s-4);
+}
+
+.admin-stat {
+  position: relative;
+  padding: var(--s-5);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.admin-stat::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--fogo-dim), transparent);
+  opacity: 0.5;
+}
+.admin-stat-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  color: var(--cinza-medio);
+}
+.admin-stat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-sm);
+  background: var(--fogo-dim);
+  color: var(--fogo);
+}
+.admin-stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--cinza-medio);
+}
+.admin-stat-value {
+  margin-top: var(--s-3);
+  font-family: var(--font-head);
+  font-size: 2.1rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--vazio);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Tab panel container ─────────────────────────────────────── */
+.admin-panel {
+  padding: var(--s-5);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.admin-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--s-4);
+}
+.admin-panel-title {
+  font-family: var(--font-head);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--vazio);
+}
+.admin-panel-sub {
+  font-size: 0.82rem;
+  color: var(--cinza-medio);
+  margin-top: 2px;
+}
+
+/* ── Responsive table ────────────────────────────────────────── */
+.admin-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  -webkit-overflow-scrolling: touch;
+}
+.admin-table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+}
+.admin-table thead th {
+  position: sticky;
+  top: 0;
+  text-align: left;
+  padding: var(--s-3) var(--s-4);
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--cinza-medio);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.admin-table tbody td {
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--hairline);
+  color: var(--prata);
+  vertical-align: middle;
+}
+.admin-table tbody tr:last-child td { border-bottom: none; }
+.admin-table tbody tr {
+  transition: background var(--d-fast) var(--ease-out-quint);
+}
+.admin-table tbody tr:hover { background: var(--surface-2); }
+.admin-table .cell-strong {
+  color: var(--vazio);
+  font-weight: 600;
+}
+.admin-table .cell-mono {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--cinza-medio);
+}
+.admin-cell-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+.admin-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+
+/* ── Keys ────────────────────────────────────────────────────── */
+.admin-key-secret {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  margin-top: var(--s-3);
+  border-radius: var(--r-md);
+  background: var(--abismo);
+  border: 1px solid var(--fogo-dim-2);
+}
+.admin-key-secret code {
+  flex: 1 1 auto;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--fogo);
+  word-break: break-all;
+  line-height: 1.5;
+}
+.admin-key-hint {
+  font-size: 0.76rem;
+  color: var(--ambar);
+  margin-top: var(--s-2);
+}
+.admin-key-prefix {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--cinza-medio);
+}
+
+/* ── Data viewer ─────────────────────────────────────────────── */
+.admin-dbviewer-toggle {
+  display: inline-flex;
+  gap: var(--s-1);
+  padding: var(--s-1);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+}
+.admin-dbviewer-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-2) var(--s-4);
+  border: none;
+  background: transparent;
+  color: var(--cinza-medio);
+  font-family: var(--font-head);
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: var(--r-full);
+  cursor: pointer;
+  transition: color var(--d-fast), background var(--d-fast);
+}
+.admin-dbviewer-btn:hover { color: var(--prata); }
+.admin-dbviewer-btn.active {
+  color: var(--abismo);
+  background: var(--fogo);
+}
+.admin-dbviewer-btn:focus-visible {
+  outline: 2px solid var(--fogo);
+  outline-offset: 2px;
+}
+.admin-db-count {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--cinza-medio);
+}
+.admin-db-cell {
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.82rem;
+}
+
+/* ── Overview summary ────────────────────────────────────────── */
+.admin-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--s-4);
+}
+.admin-overview-card {
+  padding: var(--s-5);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.admin-overview-card h4 {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--cinza-medio);
+  margin-bottom: var(--s-2);
+}
+.admin-overview-card p {
+  font-size: 0.86rem;
+  color: var(--prata);
+  line-height: 1.6;
+}
+.admin-overview-card strong { color: var(--fogo); }
+
+.admin-loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+/* ── Skeleton rows ───────────────────────────────────────────── */
+.admin-skel-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--s-4);
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .admin-stats,
+  .admin-skel-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .admin-stats,
+  .admin-skel-grid { grid-template-columns: 1fr; }
+  .admin-panel { padding: var(--s-4); }
+  .admin-stat-value { font-size: 1.8rem; }
+}
+
+@media (max-width: 360px) {
+  .admin-tab { padding: var(--s-2) var(--s-3); font-size: 0.76rem; }
+  .admin-tab-label { display: none; }
+  .admin-tab.active .admin-tab-label { display: inline; }
+  .admin-panel { padding: var(--s-3); }
+}

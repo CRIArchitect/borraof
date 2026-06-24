@@ -1,0 +1,311 @@
+/* ═══════════════════════════════════════════════════════════════
+   BORRÃO — Histórico (acervo de gerações)
+   Slice "history": filtros, lista de cards, modal de detalhe.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ───────────────────────── Barra de filtros ───────────────────────── */
+.hist-filters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  margin-bottom: var(--s-6);
+}
+
+.hist-filters-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: var(--s-3);
+  align-items: end;
+}
+
+/* Campo de busca com ícone embutido */
+.hist-search {
+  position: relative;
+}
+.hist-search .field-input {
+  padding-left: 40px;
+}
+.hist-search-icon {
+  position: absolute;
+  left: 14px;
+  bottom: 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  color: var(--cinza-medio);
+  pointer-events: none;
+}
+.hist-search:focus-within .hist-search-icon {
+  color: var(--fogo);
+}
+
+/* Trilha de chips de tipo */
+.hist-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  align-items: center;
+}
+.hist-chips-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cinza-fraco);
+  margin-right: var(--s-1);
+}
+.hist-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.hist-chip svg {
+  opacity: 0.8;
+}
+
+/* ───────────────────────── Lista de cards ───────────────────────── */
+.hist-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--s-4);
+}
+
+.hist-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  width: 100%;
+  text-align: left;
+  padding: var(--s-5);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent),
+    var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r-lg);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: border-color var(--d-fast) var(--ease-out-quint),
+    background var(--d-mid) var(--ease-out-quint);
+}
+.hist-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--fogo-dim-2), transparent);
+  opacity: 0;
+  transition: opacity var(--d-mid) var(--ease-out-quint);
+}
+.hist-card:hover {
+  border-color: var(--border-strong);
+  background:
+    linear-gradient(180deg, rgba(252, 75, 8, 0.04), transparent),
+    var(--surface-2);
+}
+.hist-card:hover::before { opacity: 1; }
+.hist-card:focus-visible {
+  outline: none;
+  border-color: var(--fogo);
+  box-shadow: 0 0 0 1px var(--fogo-dim), var(--glow-fogo);
+}
+
+.hist-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+.hist-card-company {
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  color: var(--vazio);
+  line-height: 1.2;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hist-card-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fogo);
+  padding: 4px 9px;
+  border-radius: var(--r-full);
+  background: var(--fogo-dim);
+  border: 0.5px solid var(--fogo-dim-2);
+}
+.hist-card-type svg { flex-shrink: 0; }
+
+.hist-card-brief {
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--prata);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hist-card-foot {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-top: auto;
+}
+.hist-card-time {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--cinza-medio);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.hist-card-arrow {
+  margin-left: auto;
+  color: var(--cinza-fraco);
+  display: flex;
+  transition: transform var(--d-fast) var(--ease-out-quint), color var(--d-fast);
+}
+.hist-card:hover .hist-card-arrow {
+  color: var(--fogo);
+  transform: translateX(3px);
+}
+
+/* Vazio após filtro (inline) */
+.hist-empty-inline {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--s-9) var(--s-4);
+  border: 0.5px dashed var(--border);
+  border-radius: var(--r-lg);
+  color: var(--cinza-medio);
+}
+.hist-empty-inline .hist-empty-symbol {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 34px;
+  color: var(--grafite);
+  margin-bottom: var(--s-2);
+}
+.hist-empty-inline p {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--cinza-medio);
+}
+
+/* ───────────────────────── Skeletons ───────────────────────── */
+.hist-skeleton-card {
+  padding: var(--s-5);
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.hist-skeleton-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+
+/* ───────────────────────── Modal de detalhe ───────────────────────── */
+.hist-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+.hist-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--cinza-medio);
+}
+.hist-detail-meta .dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--grafite);
+}
+
+.hist-detail-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+.hist-detail-block-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cinza-fraco);
+}
+
+.hist-detail-brief {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--nevoa);
+  padding-left: var(--s-3);
+  border-left: 2px solid var(--fogo-dim-2);
+}
+
+.result-area {
+  max-height: 46vh;
+  overflow-y: auto;
+  padding: var(--s-4);
+  background: var(--abismo);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--inset-hi);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--prata);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.result-area::-webkit-scrollbar { width: 8px; }
+.result-area::-webkit-scrollbar-thumb {
+  background: var(--grafite);
+  border-radius: var(--r-full);
+}
+.result-area::-webkit-scrollbar-track { background: transparent; }
+
+/* ───────────────────────── Responsivo ───────────────────────── */
+@media (max-width: 720px) {
+  .hist-filters-row {
+    grid-template-columns: 1fr;
+    gap: var(--s-3);
+  }
+  .hist-list {
+    grid-template-columns: 1fr;
+    gap: var(--s-3);
+  }
+}
+
+@media (max-width: 360px) {
+  .hist-card { padding: var(--s-4); }
+  .hist-card-company { font-size: 14px; }
+  .hist-detail-brief { font-size: 15px; }
+  .result-area { font-size: 13px; padding: var(--s-3); max-height: 50vh; }
+  .hist-chips-label { width: 100%; margin-bottom: 2px; }
+}

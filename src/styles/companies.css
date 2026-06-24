@@ -1,0 +1,353 @@
+/* ═══════════════════════════════════════════════════════════════
+   BORRÃO — companies slice
+   Grid of brand cards, 2-column form + live brand preview,
+   tone chips, color swatches. Accent driven by per-brand color.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Grid of company cards ─────────────────────────────────────── */
+.companies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--s-4);
+}
+
+/* ── Company card ──────────────────────────────────────────────── */
+.company-card {
+  --brand: var(--fogo);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-5);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background:
+    linear-gradient(180deg, var(--surface) 0%, var(--breu) 100%);
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  isolation: isolate;
+  transition: border-color var(--d-mid) var(--ease-out-quint),
+    box-shadow var(--d-mid) var(--ease-out-quint);
+}
+
+/* Top brand-colour hairline that lights up on hover. */
+.company-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--brand), transparent);
+  opacity: 0.45;
+  transition: opacity var(--d-mid) var(--ease-out-quint);
+  z-index: 1;
+}
+
+/* Soft brand glow that blooms behind the card on hover. */
+.company-card::after {
+  content: "";
+  position: absolute;
+  top: -40%;
+  right: -30%;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, var(--brand) 0%, transparent 68%);
+  opacity: 0;
+  filter: blur(8px);
+  transition: opacity var(--d-slow) var(--ease-out-quint);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.company-card:hover {
+  border-color: color-mix(in srgb, var(--brand) 55%, var(--border-strong));
+  box-shadow: var(--shadow-md);
+}
+.company-card:hover::before { opacity: 1; }
+.company-card:hover::after { opacity: 0.16; }
+
+.company-card:focus-visible {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--brand) 60%, transparent);
+}
+
+.company-card > * { position: relative; z-index: 2; }
+
+.company-card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.company-dot {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--r-full);
+  background: var(--brand);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand) 18%, transparent),
+    0 0 14px var(--brand);
+}
+
+.company-card-name {
+  font-family: var(--font-head);
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  color: var(--vazio);
+  word-break: break-word;
+}
+
+.company-card-segment {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--prata);
+}
+
+.company-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  margin-top: auto;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cinza-medio);
+}
+.company-card-meta .dot-sep { opacity: 0.5; }
+
+.company-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--brand);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity var(--d-mid) var(--ease-out-quint),
+    transform var(--d-mid) var(--ease-out-quint);
+}
+.company-card:hover .company-card-cta,
+.company-card:focus-visible .company-card-cta {
+  opacity: 1;
+  transform: translateX(0);
+}
+.company-card-cta svg { width: 14px; height: 14px; }
+
+/* ── Form + preview two-column layout ──────────────────────────── */
+.company-form-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: var(--s-6);
+  align-items: start;
+}
+
+.company-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+}
+
+.company-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-4);
+}
+
+.company-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3);
+  padding-top: var(--s-2);
+}
+
+/* The preview column sticks while scrolling the form. */
+.company-preview-col {
+  position: sticky;
+  top: var(--s-5);
+}
+
+/* ── Tone chips ────────────────────────────────────────────────── */
+.tone-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+/* ── Colour swatches ───────────────────────────────────────────── */
+.color-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+}
+
+.color-swatch {
+  --sw: #fff;
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-full);
+  background: var(--sw);
+  border: 2px solid transparent;
+  box-shadow: var(--inset-hi), 0 0 0 1px var(--border) inset;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--abismo);
+  transition: transform var(--d-fast) var(--ease-out-quint),
+    box-shadow var(--d-fast) var(--ease-out-quint);
+}
+.color-swatch:hover { transform: scale(1.12); }
+.color-swatch:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--abismo), 0 0 0 4px var(--sw);
+}
+.color-swatch.selected {
+  box-shadow: 0 0 0 2px var(--abismo), 0 0 0 4px var(--sw),
+    0 0 16px color-mix(in srgb, var(--sw) 70%, transparent);
+}
+.color-swatch svg { width: 16px; height: 16px; }
+
+/* ── Brand preview panel ───────────────────────────────────────── */
+.brand-preview {
+  --brand: var(--fogo);
+}
+.brand-preview-card {
+  position: relative;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(120% 90% at 100% 0%,
+      color-mix(in srgb, var(--brand) 14%, transparent) 0%, transparent 55%),
+    linear-gradient(180deg, var(--surface-2) 0%, var(--breu) 100%);
+  padding: var(--s-5);
+  overflow: hidden;
+}
+.brand-preview-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--brand), transparent);
+  opacity: 0.7;
+}
+
+.brand-preview-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin-bottom: var(--s-4);
+}
+.brand-preview-dot {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--r-full);
+  background: var(--brand);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--brand) 16%, transparent),
+    0 0 18px var(--brand);
+}
+.brand-preview-name {
+  font-family: var(--font-head);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  color: var(--vazio);
+  word-break: break-word;
+}
+.brand-preview-name.is-placeholder { color: var(--cinza-medio); }
+
+.brand-preview-quote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--nevoa);
+  margin: var(--s-3) 0 var(--s-4);
+  padding-left: var(--s-3);
+  border-left: 2px solid color-mix(in srgb, var(--brand) 60%, transparent);
+}
+
+.brand-preview-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.brand-preview-row {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: var(--s-3);
+  align-items: baseline;
+}
+.brand-preview-key {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cinza-medio);
+}
+.brand-preview-val {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--prata);
+  word-break: break-word;
+}
+.brand-preview-val.is-empty {
+  color: var(--cinza-fraco);
+  font-style: italic;
+}
+
+.brand-preview-tone {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border-radius: var(--r-full);
+  border: 1px solid color-mix(in srgb, var(--brand) 45%, var(--border));
+  background: color-mix(in srgb, var(--brand) 12%, transparent);
+  color: color-mix(in srgb, var(--brand) 82%, var(--vazio));
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+/* ── Responsive: collapse to single column ─────────────────────── */
+@media (max-width: 920px) {
+  .company-form-layout {
+    grid-template-columns: 1fr;
+  }
+  .company-preview-col {
+    position: static;
+    order: -1;
+  }
+}
+
+@media (max-width: 520px) {
+  .company-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .companies-grid {
+    grid-template-columns: 1fr;
+  }
+  .company-form-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .company-form-actions > * { width: 100%; }
+}
+
+@media (max-width: 360px) {
+  .company-card { padding: var(--s-4); }
+  .brand-preview-card { padding: var(--s-4); }
+  .brand-preview-row { grid-template-columns: 78px 1fr; }
+}
