@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ImagePlus } from "lucide-react";
 import { useCompanies } from "../hooks/usecompanies";
 import { useToast } from "../context/toastcontext";
 import { imageService } from "../services/imageservice";
 import { errMsg } from "../services/api";
-import { resolveSrc, ratioById } from "../lib/imagegen";
 import { stagger } from "../lib/motion";
 import PageHeader from "../components/layout/pageheader";
 import Button from "../components/common/button";
@@ -23,34 +21,69 @@ export default function EstudioPage() {
   const [images, setImages] = useState([]);
   const [generating, setGenerating] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [pending, setPending] = useState(null); // { n, ratio }
-  const [editor, setEditor] = useState(null); // { src, ratio, brand }
+  const [pending, setPending] = useState(false);
+  const [editor, setEditor] = useState(null);
 
-  const attach = (imgs, company) =>
-    (imgs || []).map((im) => ({ ...im, companyName: company?.name || im.companyName, color: im.color || company?.color }));
+  function adapt(data, company, extra = {}) {
+    return {
+      id: data.id || data.image_url,
+      url: data.image_url,
+      prompt: data.prompt_used || extra.prompt,
+      classification: data.classification,
+      company_id: company?.id,
+      companyName: company?.name || extra.companyName,
+      color: company?.color || extra.color,
+      ratio: "1:1",
+      seed: data.id || Date.now(),
+      created_at: data.created_at,
+      ...extra,
+    };
+  }
 
-  async function handleGenerate({ company, ...payload }) {
+  async function handleGenerate(payload) {
+    const company = payload.company;
+    const brief = payload.prompt || payload.brief || "";
+    if (!company?.id || !brief.trim()) {
+      toast.error("Faltam dados", "Escolha uma empresa e descreva a imagem.");
+      return;
+    }
     setGenerating(true);
-    setPending({ n: payload.n, ratio: payload.ratio });
+    setPending(true);
     try {
-      const data = await imageService.generate(payload);
-      setImages((prev) => [...attach(data.images, company), ...prev]);
+      const data = await imageService.generate(company.id, brief);
+      setImages((prev) => [adapt(data, company), ...prev]);
     } catch (err) {
       toast.error("Não foi possível gerar", errMsg(err));
     } finally {
       setGenerating(false);
-      setPending(null);
+      setPending(false);
     }
   }
 
-  async function handleAiEdit(image, op) {
+  async function handleAiEdit(image, op, extraInput) {
     setBusy(true);
-    const labels = { variations: "Variações", "remove-bg": "Fundo removido", outpaint: "Imagem expandida", upscale: "Resolução aumentada" };
     try {
-      const data = await imageService.edit({ op, seed: image.seed, ratio: image.ratio, color: image.color, prompt: image.prompt, company_id: image.company_id });
-      const next = attach(data.images, { name: image.companyName, color: image.color });
-      setImages((prev) => [...next, ...prev]);
-      toast.success(labels[op] || "Pronto", op === "variations" ? `${next.length} novas variações` : undefined);
+      if (op === "variations") {
+        const data = await imageService.variations(image.prompt || "Variação visual da marca", image.company_id);
+        const news = (data.images || []).map((d) => adapt(d, null, {
+          companyName: image.companyName, color: image.color, prompt: image.prompt, company_id: image.company_id,
+        }));
+        setImages((prev) => [...news, ...prev]);
+        toast.success(`${news.length} variações geradas`);
+      } else if (op === "remove-bg") {
+        const data = await imageService.removeBg(image.url, image.company_id);
+        setImages((prev) => [adapt(data, null, {
+          companyName: image.companyName, color: image.color, prompt: "Fundo removido", company_id: image.company_id,
+        }), ...prev]);
+        toast.success("Fundo removido");
+      } else if (op === "outpaint") {
+        const direction = extraInput?.direction || "all";
+        const data = await imageService.outpaint(image.url, direction, image.company_id);
+        setImages((prev) => [adapt(data, null, {
+          companyName: image.companyName, color: image.color, prompt: `Expandido (${direction})`, company_id: image.company_id,
+        }), ...prev]);
+        toast.success("Imagem expandida");
+      }
     } catch (err) {
       toast.error("Falha na edição", errMsg(err));
     } finally {
@@ -60,19 +93,27 @@ export default function EstudioPage() {
 
   function handleDownload(image) {
     const a = document.createElement("a");
-    a.href = resolveSrc(image);
-    a.download = `borrao-${String(image.ratio).replace(":", "x")}-${image.seed}.png`;
+    a.href = image.url;
+    a.download = `borrao-${image.seed || Date.now()}.png`;
+    a.target = "_blank";
+    a.rel = "noreferrer";
     a.click();
     toast.success("Imagem baixada");
   }
 
   function handleEdit(image) {
-    setEditor({ src: resolveSrc(image), ratio: image.ratio, brand: { name: image.companyName, color: image.color } });
+    setEditor({
+      src: image.url, ratio: image.ratio || "1:1",
+      brand: { name: image.companyName, color: image.color },
+    });
   }
 
   function handleUpload(file, company) {
     const reader = new FileReader();
-    reader.onload = () => setEditor({ src: reader.result, ratio: "1:1", brand: { name: company?.name, color: company?.color } });
+    reader.onload = () => setEditor({
+      src: reader.result, ratio: "1:1",
+      brand: { name: company?.name, color: company?.color },
+    });
     reader.readAsDataURL(file);
   }
 
@@ -89,8 +130,6 @@ export default function EstudioPage() {
       </>
     );
   }
-
-  const pendingAr = pending ? (() => { const r = ratioById(pending.ratio); return r.w / r.h; })() : 1;
 
   return (
     <>
@@ -113,34 +152,20 @@ export default function EstudioPage() {
             <EmptyState
               symbol="◑"
               title="Nada gerado ainda"
-              subtitle="Descreva a imagem que você quer, escolha o formato e clique em gerar — ou envie uma imagem própria para editar."
+              subtitle="Descreva a imagem que você quer e clique em gerar. A IA cria um visual na identidade da marca em poucos segundos."
             />
           ) : (
             <motion.div className="studio-grid" variants={stagger(0.05)} initial="hidden" animate="show">
-              {pending && Array.from({ length: pending.n }).map((_, i) => (
-                <div key={`s${i}`} className="skeleton studio-skel" style={{ "--ar": pendingAr }} />
-              ))}
+              {pending && <div className="skeleton studio-skel" style={{ "--ar": 1 }} />}
               {images.map((im) => (
-                <ImageCard
-                  key={`${im.id}-${im.seed}`}
-                  image={im}
-                  busy={busy}
-                  onEdit={handleEdit}
-                  onAiEdit={handleAiEdit}
-                  onDownload={handleDownload}
-                />
+                <ImageCard key={`${im.id}-${im.seed}`} image={im} busy={busy} onEdit={handleEdit} onAiEdit={handleAiEdit} onDownload={handleDownload} />
               ))}
             </motion.div>
           )}
         </div>
       </div>
 
-      <ImageEditor
-        open={!!editor}
-        source={editor}
-        brand={editor?.brand}
-        onClose={() => setEditor(null)}
-      />
+      <ImageEditor open={!!editor} source={editor} brand={editor?.brand} onClose={() => setEditor(null)} />
     </>
   );
 }

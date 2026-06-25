@@ -4,12 +4,11 @@
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "functions": {
-    "api/image/generate.js": {
-      "maxDuration": 60
-    },
-    "api/generate.js": {
-      "maxDuration": 30
-    }
+    "api/image/generate.js": { "maxDuration": 60 },
+    "api/image/variations.js": { "maxDuration": 120 },
+    "api/image/remove-bg.js": { "maxDuration": 60 },
+    "api/image/outpaint.js": { "maxDuration": 90 },
+    "api/generate.js": { "maxDuration": 30 }
   },
   "headers": [
     {
