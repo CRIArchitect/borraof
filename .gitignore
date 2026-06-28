@@ -7,3 +7,11 @@ dist
 .DS_Store
 *.log
 .vercel
+
+# scripts de dev/QA locais (não sobem)
+dev-api.mjs
+verify-keys.mjs
+test-*.mjs
+probe-*.mjs
+clean-*.mjs
+.wf-audit.js

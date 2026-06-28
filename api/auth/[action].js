@@ -18,6 +18,8 @@ export default async function handler(req, res) {
       return me(req, res);
     case "request-access":
       return requestAccess(req, res);
+    case "forgot-password":
+      return forgotPassword(req, res);
     default:
       return res.status(404).json({ detail: "Rota de autenticação não encontrada" });
   }
@@ -54,7 +56,7 @@ async function login(req, res) {
   }
 
   if (!user.is_active) {
-    return res.status(403).json({ detail: "Conta desativada" });
+    return res.status(403).json({ detail: "Sua conta ainda não foi liberada por um administrador." });
   }
 
   const ok = bcrypt.compareSync(password, user.password);
@@ -108,8 +110,10 @@ async function register(req, res) {
       name: String(name).trim(),
       email: cleanEmail,
       password: hash,
+      is_active: false,
+      is_admin: false,
     })
-    .select("id, name, email, is_admin")
+    .select("id, name, email")
     .single();
 
   if (inserted.error) {
@@ -117,14 +121,11 @@ async function register(req, res) {
     return res.status(500).json({ detail: "Erro ao criar conta" });
   }
 
-  const user = inserted.data;
-  const token = signToken({ id: user.id, email: user.email, is_admin: user.is_admin });
-
-  return res.status(200).json({
-    token,
-    name: user.name,
-    email: user.email,
-    is_admin: user.is_admin,
+  // Sem token: a conta nasce inativa e só é liberada quando um admin a ativa.
+  return res.status(201).json({
+    pending: true,
+    name: inserted.data.name,
+    email: inserted.data.email,
   });
 }
 
@@ -182,6 +183,40 @@ async function requestAccess(req, res) {
   if (insert.error) {
     console.error("[request-access] error", insert.error);
     return res.status(500).json({ detail: "Erro ao registrar" });
+  }
+
+  return res.status(200).json({ ok: true });
+}
+
+// Pedido de recuperação de senha: registra na tabela `waitlist` (revisada como
+// fila de solicitações) para o admin ver no painel. Não revela se o e-mail existe.
+async function forgotPassword(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ detail: "Método não permitido" });
+  }
+
+  const { email } = req.body || {};
+  if (!email) {
+    return res.status(400).json({ detail: "Email é obrigatório" });
+  }
+
+  const cleanEmail = String(email).trim().toLowerCase();
+
+  const existing = await supabase
+    .from("waitlist")
+    .select("id")
+    .eq("email", cleanEmail)
+    .eq("status", "pending")
+    .maybeSingle();
+
+  if (!existing.data) {
+    const insert = await supabase
+      .from("waitlist")
+      .insert({ name: "Recuperação de senha", email: cleanEmail, status: "pending" });
+    if (insert.error) {
+      console.error("[forgot-password] error", insert.error);
+      return res.status(500).json({ detail: "Erro ao registrar pedido" });
+    }
   }
 
   return res.status(200).json({ ok: true });

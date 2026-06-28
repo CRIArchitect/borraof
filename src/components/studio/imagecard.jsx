@@ -65,8 +65,7 @@ export default function ImageCard({ image, onEdit, onAiEdit, onDownload, busy })
               style={{
                 position: "absolute",
                 inset: 0,
-                background: "rgba(0,0,0,0.78)",
-                backdropFilter: "blur(8px)",
+                background: "rgba(0,0,0,0.86)",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",

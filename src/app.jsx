@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/common/protectedroute";
 import AppShell from "./components/layout/appshell";
 import LoadingState from "./components/common/loadingstate";
 
+import LandingPage from "./pages/landingpage";
 import LoginPage from "./pages/loginpage";
 import RegisterPage from "./pages/registerpage";
 import WaitlistPage from "./pages/waitlistpage";
@@ -24,7 +25,7 @@ export default function App() {
   return (
     <Suspense fallback={<LoadingState />}>
       <Routes>
-        <Route path="/" element={<Navigate to={isAuthenticated ? "/app" : "/login"} replace />} />
+        <Route path="/" element={isAuthenticated ? <Navigate to="/app" replace /> : <LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/waitlist" element={<WaitlistPage />} />

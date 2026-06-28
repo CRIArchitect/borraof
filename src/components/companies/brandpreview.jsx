@@ -3,8 +3,8 @@ import { COLOR_PALETTE } from "../../util/constants";
 
 /**
  * BrandPreview — live preview of the brand as the form changes.
- * Shows a stylised card with brand dot/name in the chosen colour,
- * a tone chip and the key brand attributes.
+ * Mostra um cartão estilizado com dot/nome na cor escolhida, chip de tom
+ * e os atributos-chave que alimentam a IA.
  */
 export default function BrandPreview({ form = {} }) {
   const brand = form.color || COLOR_PALETTE[0];
@@ -13,7 +13,7 @@ export default function BrandPreview({ form = {} }) {
   const rows = [
     { key: "Segmento", value: form.segment },
     { key: "Público", value: form.audience },
-    { key: "Cidade", value: form.city },
+    { key: "Estilo visual", value: form.visual_style },
   ];
 
   return (
@@ -36,8 +36,10 @@ export default function BrandPreview({ form = {} }) {
         )}
 
         <p className="brand-preview-quote">
-          {form.extra?.trim()
-            ? form.extra.trim()
+          {form.description?.trim()
+            ? form.description.trim()
+            : form.mission?.trim()
+            ? form.mission.trim()
             : "Conteúdo nítido, no tom certo, para cada publicação."}
         </p>
 

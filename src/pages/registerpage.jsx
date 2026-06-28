@@ -7,7 +7,6 @@ import AuthShell from "../components/auth/authshell";
 import PasswordStrength from "../components/auth/passwordstrength";
 import Button from "../components/common/button";
 import { FloatInput } from "../components/common/field";
-import { useAuth } from "../context/authcontext";
 import { useToast } from "../context/toastcontext";
 import { authService } from "../services/authservice";
 import { errMsg } from "../services/api";
@@ -15,7 +14,6 @@ import { ease } from "../lib/motion";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
-  const { login } = useAuth();
   const toast = useToast();
 
   const [name, setName] = useState("");
@@ -34,10 +32,9 @@ export default function RegisterPage() {
     setError("");
     setLoading(true);
     try {
-      const data = await authService.register(email.trim(), name.trim(), password);
-      login(data);
-      toast.success("Conta criada", "Bem-vindo ao Borrão.");
-      navigate("/app", { replace: true });
+      await authService.register(email.trim(), name.trim(), password);
+      toast.success("Solicitação enviada", "Seu acesso será liberado após aprovação.");
+      navigate("/waitlist", { replace: true });
     } catch (err) {
       setError(errMsg(err, "Não foi possível criar a conta."));
     } finally {
@@ -48,9 +45,9 @@ export default function RegisterPage() {
   return (
     <AuthShell>
       <div className="auth-head">
-        <h1 className="auth-title">Criar conta</h1>
+        <h1 className="auth-title">Solicitar acesso</h1>
         <p className="auth-hint">
-          Entre no <strong>Borrão</strong> e comece a criar conteúdo no DNA da sua marca.
+          Crie suas credenciais do <strong>Borrão</strong>. Seu acesso é liberado após a aprovação de um administrador.
         </p>
       </div>
 
@@ -111,7 +108,7 @@ export default function RegisterPage() {
           loading={loading}
           icon={!loading ? <ArrowRight size={16} aria-hidden /> : null}
         >
-          {loading ? "Criando conta…" : "Criar conta"}
+          {loading ? "Enviando…" : "Solicitar acesso"}
         </Button>
       </form>
 

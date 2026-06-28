@@ -83,7 +83,7 @@ export default function StudioControls({ companies, generating, onGenerate, onUp
         <div className="count-pill">
           <button type="button" onClick={() => setN((v) => Math.max(1, v - 1))} disabled={n <= 1} aria-label="Menos"><Minus size={14} /></button>
           <span className="count-val">{n}</span>
-          <button type="button" onClick={() => setN((v) => Math.min(6, v + 1))} disabled={n >= 6} aria-label="Mais"><Plus size={14} /></button>
+          <button type="button" onClick={() => setN((v) => Math.min(4, v + 1))} disabled={n >= 4} aria-label="Mais"><Plus size={14} /></button>
         </div>
       </div>
 

@@ -1,7 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════
-   AUTH SLICE — fatia "auth"
-   Shell full-screen com aurora animada (blobs radiais à deriva),
-   card editorial central, OTP de 6 caixas e medidor de senha.
+   AUTH SLICE — fatia "auth" · estética "desborrar"
+   Preto puro, card reto com fio, barra laranja no topo, OTP sem glow.
    Consome tokens/keyframes globais — não redefine nenhum.
    ═══════════════════════════════════════════════════════════════ */
 
@@ -18,65 +17,9 @@
   isolation: isolate;
 }
 
-/* Camada das auroras — atrás de tudo, não intercepta cliques. */
-.auth-aurora {
-  position: absolute;
-  inset: -20%;
-  z-index: -2;
-  pointer-events: none;
-  filter: blur(8px);
-}
-
-.auth-blob {
-  position: absolute;
-  border-radius: var(--r-full);
-  opacity: 0.5;
-  mix-blend-mode: screen;
-  will-change: transform;
-  animation: auroraShift var(--blob-dur, 26s) var(--ease-out-quint) infinite;
-  animation-delay: var(--blob-delay, 0s);
-}
-
-.auth-blob-1 {
-  top: -10%;
-  left: -8%;
-  width: 46vmax;
-  height: 46vmax;
-  background: radial-gradient(circle at 35% 35%, var(--fogo) 0%, var(--fogo-dim) 38%, transparent 68%);
-  --blob-dur: 28s;
-}
-
-.auth-blob-2 {
-  bottom: -16%;
-  right: -10%;
-  width: 42vmax;
-  height: 42vmax;
-  background: radial-gradient(circle at 60% 40%, var(--orquidea) 0%, transparent 62%);
-  opacity: 0.32;
-  --blob-dur: 34s;
-  --blob-delay: -6s;
-}
-
-.auth-blob-3 {
-  top: 28%;
-  right: 18%;
-  width: 30vmax;
-  height: 30vmax;
-  background: radial-gradient(circle at 50% 50%, var(--ceu) 0%, transparent 60%);
-  opacity: 0.22;
-  --blob-dur: 40s;
-  --blob-delay: -14s;
-}
-
-/* Véu escuro para garantir contraste do conteúdo sobre as auroras. */
-.auth-veil {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(120% 90% at 50% 0%, transparent 0%, rgba(0, 0, 0, 0.55) 70%, rgba(0, 0, 0, 0.82) 100%);
-}
+/* Aurora e véu desativados — canvas preto puro. */
+.auth-aurora,
+.auth-veil { display: none; }
 
 /* ── Card ───────────────────────────────────────────────────── */
 .auth-card {
@@ -84,23 +27,22 @@
   width: 100%;
   max-width: 440px;
   padding: var(--s-8) var(--s-7) var(--s-7);
-  border-radius: var(--r-xl);
-  background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
-  border: 0.5px solid var(--border-2);
-  box-shadow: var(--shadow-pop), var(--inset-hi);
+  border-radius: 0;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-pop);
   overflow: hidden;
 }
 
 .auth-card::before {
-  /* borda superior brilhante — assinatura "edge-glow" */
+  /* barra superior sólida laranja — assinatura */
   content: "";
   position: absolute;
   top: 0;
-  left: 12%;
-  right: 12%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--fogo), transparent);
-  opacity: 0.7;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--fogo);
 }
 
 /* ── Marca ──────────────────────────────────────────────────── */
@@ -114,25 +56,21 @@
 
 .auth-logo {
   font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 600;
-  font-size: clamp(2.6rem, 9vw, 3.4rem);
+  font-weight: 800;
+  font-size: clamp(2.3rem, 8vw, 3rem);
   line-height: 1;
   letter-spacing: -0.01em;
   color: var(--vazio);
 }
 
-.auth-logo .tilde {
-  color: var(--fogo);
-  text-shadow: 0 0 18px var(--fogo-glow), 0 0 38px var(--fogo-dim);
-  animation: pulseGlow 4.5s ease-in-out infinite;
-}
+.auth-logo .tilde { color: var(--fogo); }
 
 .auth-sub {
-  margin-top: var(--s-2);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.34em;
+  margin-top: var(--s-3);
+  font-family: var(--font-head);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--prata);
 }
@@ -147,10 +85,11 @@
 
 .auth-title {
   font-family: var(--font-head);
-  font-weight: 600;
-  font-size: 1.18rem;
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: var(--vazio);
-  letter-spacing: -0.01em;
 }
 
 .auth-hint {
@@ -174,7 +113,7 @@
 .auth-foot {
   margin-top: var(--s-6);
   padding-top: var(--s-5);
-  border-top: 0.5px solid var(--hairline);
+  border-top: 1px solid var(--border);
   text-align: center;
   font-size: 0.85rem;
   color: var(--nevoa);
@@ -184,7 +123,6 @@
   color: var(--fogo);
   font-weight: 600;
   text-decoration: none;
-  border-radius: var(--r-xs);
   transition: color var(--d-fast) var(--ease-out-quint);
 }
 .auth-link:hover { color: var(--fogo-2); }
@@ -205,7 +143,7 @@
   font-size: 0.82rem;
   color: var(--nevoa);
   padding: var(--s-1) var(--s-2);
-  border-radius: var(--r-sm);
+  border-radius: 0;
   transition: color var(--d-fast) var(--ease-out-quint);
 }
 .auth-back:hover { color: var(--prata); }
@@ -227,19 +165,18 @@
   max-width: 52px;
   aspect-ratio: 3 / 4;
   text-align: center;
-  font-family: var(--font-mono);
-  font-size: 1.4rem;
-  font-weight: 500;
+  font-family: var(--font-head);
+  font-size: 1.3rem;
+  font-weight: 700;
   color: var(--vazio);
   background: var(--surface-3);
   border: 1px solid var(--border-2);
-  border-radius: var(--r-md);
+  border-radius: 0;
   caret-color: var(--fogo);
   transition:
     border-color var(--d-fast) var(--ease-out-quint),
     box-shadow var(--d-fast) var(--ease-out-quint),
-    background var(--d-fast) var(--ease-out-quint),
-    transform var(--d-fast) var(--ease-out-quint);
+    background var(--d-fast) var(--ease-out-quint);
 }
 
 .otp-cell::-webkit-outer-spin-button,
@@ -255,8 +192,7 @@
   outline: none;
   border-color: var(--fogo);
   background: var(--carvao);
-  box-shadow: 0 0 0 3px var(--fogo-dim), 0 0 18px var(--fogo-glow);
-  transform: translateY(-1px);
+  box-shadow: 0 0 0 1px var(--fogo);
 }
 
 /* ── Medidor de força de senha ──────────────────────────────── */
@@ -274,7 +210,7 @@
 .pwd-seg {
   flex: 1;
   height: 4px;
-  border-radius: var(--r-full);
+  border-radius: 0;
   background: var(--surface-3);
   overflow: hidden;
   position: relative;
@@ -284,7 +220,6 @@
   position: absolute;
   inset: 0;
   transform-origin: left center;
-  border-radius: inherit;
 }
 
 .pwd-label {
@@ -315,18 +250,19 @@
 
 .waitlist-glyph {
   font-family: var(--font-display);
-  font-size: 4.4rem;
+  font-weight: 800;
+  font-size: 4rem;
   line-height: 1;
   color: var(--fogo);
-  text-shadow: 0 0 26px var(--fogo-glow), 0 0 60px var(--fogo-dim);
   animation: float 6s ease-in-out infinite;
-  filter: drop-shadow(0 0 12px var(--fogo-dim));
 }
 
 .waitlist-title {
   font-family: var(--font-head);
-  font-weight: 600;
-  font-size: 1.45rem;
+  font-weight: 700;
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   color: var(--vazio);
 }
 
@@ -341,8 +277,8 @@
 @media (max-width: 420px) {
   .auth-card { padding: var(--s-6) var(--s-4) var(--s-5); }
   .otp { gap: var(--s-1); }
-  .otp-cell { font-size: 1.15rem; border-radius: var(--r-sm); }
-  .auth-sub { letter-spacing: 0.24em; }
+  .otp-cell { font-size: 1.1rem; }
+  .auth-sub { letter-spacing: 0.22em; }
 }
 
 @media (max-width: 360px) {
@@ -350,9 +286,6 @@
   .otp-cell { max-width: 44px; }
 }
 
-/* Auroras estáticas sob prefers-reduced-motion (keyframes já neutralizados
-   globalmente, mas garantimos brilho parado e sem pulso). */
 @media (prefers-reduced-motion: reduce) {
-  .auth-logo .tilde,
   .waitlist-glyph { animation: none; }
 }

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Users, Building2, Sparkles, Clock } from "lucide-react";
+import { Users, Building2, Sparkles, LifeBuoy } from "lucide-react";
 import { stagger, item } from "../../lib/motion";
 import AnimatedCounter from "../common/animatedcounter";
 
@@ -11,7 +11,7 @@ const CARDS = [
   { key: "users", label: "Usuários", icon: Users },
   { key: "companies", label: "Empresas", icon: Building2 },
   { key: "generations", label: "Gerações", icon: Sparkles },
-  { key: "waitlist", label: "Waitlist", icon: Clock },
+  { key: "waitlist", label: "Recuperações", icon: LifeBuoy },
 ];
 
 export default function AdminStats({ stats }) {

@@ -1,8 +1,10 @@
 import api from "./api";
 
 export const imageService = {
-  async generate(companyId, brief) {
-    const { data } = await api.post("/image/generate", { company_id: companyId, brief });
+  async generate(companyId, brief, opts = {}) {
+    const { data } = await api.post("/image/generate", {
+      company_id: companyId, brief, ratio: opts.ratio, n: opts.n, seed: opts.seed,
+    });
     return data;
   },
 

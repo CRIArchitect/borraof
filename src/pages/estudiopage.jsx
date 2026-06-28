@@ -21,7 +21,7 @@ export default function EstudioPage() {
   const [images, setImages] = useState([]);
   const [generating, setGenerating] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [pending, setPending] = useState(false);
+  const [pending, setPending] = useState(0);
   const [editor, setEditor] = useState(null);
 
   function adapt(data, company, extra = {}) {
@@ -33,7 +33,7 @@ export default function EstudioPage() {
       company_id: company?.id,
       companyName: company?.name || extra.companyName,
       color: company?.color || extra.color,
-      ratio: "1:1",
+      ratio: data.ratio || "1:1",
       seed: data.id || Date.now(),
       created_at: data.created_at,
       ...extra,
@@ -48,15 +48,16 @@ export default function EstudioPage() {
       return;
     }
     setGenerating(true);
-    setPending(true);
+    setPending(payload.n || 1);
     try {
-      const data = await imageService.generate(company.id, brief);
-      setImages((prev) => [adapt(data, company), ...prev]);
+      const data = await imageService.generate(company.id, brief, { ratio: payload.ratio, n: payload.n, seed: payload.seed });
+      const list = (Array.isArray(data.images) ? data.images : [data]).map((d) => adapt(d, company));
+      setImages((prev) => [...list, ...prev]);
     } catch (err) {
       toast.error("Não foi possível gerar", errMsg(err));
     } finally {
       setGenerating(false);
-      setPending(false);
+      setPending(0);
     }
   }
 
@@ -156,7 +157,9 @@ export default function EstudioPage() {
             />
           ) : (
             <motion.div className="studio-grid" variants={stagger(0.05)} initial="hidden" animate="show">
-              {pending && <div className="skeleton studio-skel" style={{ "--ar": 1 }} />}
+              {pending > 0 && Array.from({ length: pending }).map((_, i) => (
+                <div key={`sk-${i}`} className="skeleton studio-skel" style={{ "--ar": 1 }} />
+              ))}
               {images.map((im) => (
                 <ImageCard key={`${im.id}-${im.seed}`} image={im} busy={busy} onEdit={handleEdit} onAiEdit={handleAiEdit} onDownload={handleDownload} />
               ))}

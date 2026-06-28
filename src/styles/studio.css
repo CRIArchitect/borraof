@@ -23,8 +23,8 @@
 
 .ratio-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 .ratio-btn {
-  border: 0.5px solid var(--border-strong);
-  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid var(--border);
+  background: var(--surface);
   border-radius: var(--r-sm);
   padding: 10px 4px;
   cursor: pointer;
@@ -36,16 +36,16 @@
   transition: all var(--d-fast);
   font-family: var(--font-body);
 }
-.ratio-btn:hover { border-color: var(--border-strong); color: var(--prata); }
-.ratio-btn.selected { border-color: var(--fogo); color: var(--fogo-2); background: var(--fogo-dim); box-shadow: 0 0 0 3px var(--fogo-dim); }
-.ratio-glyph { border: 1.5px solid currentColor; border-radius: 2px; }
+.ratio-btn:hover { border-color: var(--fogo); color: var(--prata); }
+.ratio-btn.selected { border-color: var(--fogo); color: var(--fogo-2); background: var(--fogo-dim); }
+.ratio-glyph { border: 1.5px solid currentColor; }
 .ratio-label { font-size: 10px; }
 .ratio-sub { font-family: var(--font-mono); font-size: 9px; opacity: 0.7; }
 
 .count-row { display: flex; align-items: center; gap: 10px; }
 .count-pill {
   display: inline-flex; align-items: center; gap: 12px;
-  border: 0.5px solid var(--border-strong);
+  border: 1px solid var(--border);
   border-radius: var(--r-full);
   padding: 5px 6px;
 }
@@ -71,7 +71,7 @@
   position: relative;
   border-radius: var(--r-md);
   overflow: hidden;
-  border: 0.5px solid var(--border);
+  border: 1px solid var(--border);
   background:
     linear-gradient(45deg, #15151a 25%, transparent 25%, transparent 75%, #15151a 75%) 0 0/20px 20px,
     linear-gradient(45deg, #15151a 25%, #101013 25%, #101013 75%, #15151a 75%) 10px 10px/20px 20px;
@@ -91,8 +91,8 @@
 .studio-chip-btn {
   display: inline-flex; align-items: center; gap: 5px;
   font-size: 11px; padding: 5px 9px; border-radius: var(--r-full);
-  border: 0.5px solid var(--border-strong); background: rgba(0, 0, 0, 0.5);
-  color: var(--prata); cursor: pointer; backdrop-filter: blur(4px);
+  border: 1px solid var(--border); background: var(--breu);
+  color: var(--prata); cursor: pointer;
   transition: all var(--d-fast);
 }
 .studio-chip-btn:hover { border-color: var(--fogo); color: var(--fogo-2); }
@@ -107,22 +107,22 @@
 /* ── Editor ── */
 .editor-overlay {
   position: fixed; inset: 0; z-index: var(--z-modal);
-  background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.88);
   display: flex; align-items: center; justify-content: center; padding: 20px;
 }
 .editor-box {
   width: 100%; max-width: 1040px; max-height: 92vh;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent), var(--surface);
-  border: 0.5px solid var(--border-strong); border-radius: var(--r-lg);
+  background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--r-lg);
   box-shadow: var(--shadow-pop); overflow: hidden;
   display: grid; grid-template-columns: 1fr 320px; grid-template-rows: auto 1fr;
 }
 .editor-head {
   grid-column: 1 / -1;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 20px; border-bottom: 0.5px solid var(--border);
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
 }
-.editor-title { font-family: var(--font-head); font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 9px; }
+.editor-title { font-family: var(--font-head); font-weight: 700; font-size: 15px; text-transform: uppercase; letter-spacing: 0.04em; display: flex; align-items: center; gap: 9px; }
 .editor-title svg { color: var(--fogo); width: 17px; height: 17px; }
 .editor-stage {
   display: flex; align-items: center; justify-content: center;
@@ -131,9 +131,9 @@
     linear-gradient(45deg, #0d0d10 25%, transparent 25%, transparent 75%, #0d0d10 75%) 0 0/24px 24px,
     linear-gradient(45deg, #0d0d10 25%, #08080a 25%, #08080a 75%, #0d0d10 75%) 12px 12px/24px 24px;
 }
-.editor-canvas { max-width: 100%; max-height: 58vh; border-radius: 6px; box-shadow: var(--shadow-lg); cursor: grab; touch-action: none; }
+.editor-canvas { max-width: 100%; max-height: 58vh; border-radius: 0; box-shadow: var(--shadow-lg); cursor: grab; touch-action: none; }
 .editor-canvas:active { cursor: grabbing; }
-.editor-side { border-left: 0.5px solid var(--border); padding: 18px; overflow-y: auto; max-height: calc(92vh - 60px); }
+.editor-side { border-left: 1px solid var(--border); padding: 18px; overflow-y: auto; max-height: calc(92vh - 60px); }
 .editor-section { margin-bottom: 20px; }
 .editor-section-title {
   font-family: var(--font-mono); font-size: 10px; text-transform: uppercase;
@@ -143,21 +143,21 @@
 .editor-section-title svg { width: 13px; height: 13px; }
 .fmt-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
 .fmt-btn {
-  border: 0.5px solid var(--border-strong); background: none; border-radius: var(--r-xs);
+  border: 1px solid var(--border); background: none; border-radius: var(--r-xs);
   padding: 8px 2px; cursor: pointer; color: var(--cinza-medio);
   font-family: var(--font-mono); font-size: 10px; transition: all var(--d-fast);
 }
 .fmt-btn.selected { border-color: var(--fogo); color: var(--fogo-2); background: var(--fogo-dim); }
 .slider { width: 100%; accent-color: var(--fogo); }
 .text-layer-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.swatch-mini { width: 22px; height: 22px; border-radius: 5px; border: 0.5px solid var(--border-strong); cursor: pointer; flex-shrink: 0; }
+.swatch-mini { width: 22px; height: 22px; border-radius: 0; border: 1px solid var(--border); cursor: pointer; flex-shrink: 0; }
 .swatch-mini.on { box-shadow: 0 0 0 2px var(--vazio); }
 .color-mini-row { display: flex; gap: 6px; flex-wrap: wrap; }
 .editor-actions { display: flex; gap: 8px; }
 
 @media (max-width: 1000px) {
   .editor-box { grid-template-columns: 1fr; grid-template-rows: auto auto 1fr; max-height: 94vh; }
-  .editor-side { border-left: none; border-top: 0.5px solid var(--border); max-height: none; }
+  .editor-side { border-left: none; border-top: 1px solid var(--border); max-height: none; }
 }
 @media (max-width: 860px) {
   .studio-layout { grid-template-columns: 1fr; }

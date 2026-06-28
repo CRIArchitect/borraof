@@ -5,12 +5,37 @@ import { replicate, OUTPAINT_MODEL } from "../_lib/replicate.js";
 import { downloadAsBuffer, uploadBufferToSupabase, pickReplicateUrl } from "../_lib/imageUpload.js";
 
 const DIRECTION_PROMPTS = {
-  up: "extend the scene upward naturally, matching style and lighting",
-  down: "extend the scene downward naturally, matching style and lighting",
-  left: "extend the scene to the left naturally, matching style and lighting",
-  right: "extend the scene to the right naturally, matching style and lighting",
-  all: "extend the scene in all directions naturally, matching style and lighting",
+  up: "extend the scene upward naturally, matching style, lighting and colours",
+  down: "extend the scene downward naturally, matching style, lighting and colours",
+  left: "extend the scene to the left naturally, matching style, lighting and colours",
+  right: "extend the scene to the right naturally, matching style, lighting and colours",
+  all: "extend the scene in all directions naturally, matching style, lighting and colours",
 };
+
+// Lê width/height do cabeçalho PNG (IHDR @ offsets 16/20, big-endian).
+function pngSize(buf) {
+  if (buf.length > 24 && buf[0] === 0x89 && buf[1] === 0x50) {
+    return { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) };
+  }
+  return { w: 1024, h: 1024 };
+}
+
+// bria/expand-image só aceita aspect_ratio de um enum fixo. Direita/esquerda/all
+// expandem em largura (16:9); cima/baixo expandem em altura (9:16). O canvas é
+// casado com o aspect e a original é posicionada conforme a direção.
+function layout(dir, w, h) {
+  const ar = dir === "up" || dir === "down" ? "9:16" : "16:9";
+  const [rw, rh] = ar.split(":").map(Number);
+  const R = rw / rh;
+  if (R >= 1) {
+    const W = Math.round(h * R);
+    const x = dir === "right" ? 0 : dir === "left" ? W - w : Math.round((W - w) / 2);
+    return { ar, canvas: [W, h], loc: [Math.max(0, x), 0] };
+  }
+  const H = Math.round(w / R);
+  const y = dir === "down" ? 0 : dir === "up" ? H - h : Math.round((H - h) / 2);
+  return { ar, canvas: [w, H], loc: [0, Math.max(0, y)] };
+}
 
 export default async function handler(req, res) {
   if (applyCors(req, res)) return;
@@ -21,16 +46,23 @@ export default async function handler(req, res) {
   const { image_url, direction, company_id } = req.body || {};
   if (!image_url) return res.status(400).json({ detail: "image_url obrigatório" });
   const dir = DIRECTION_PROMPTS[direction] ? direction : "all";
-  const promptText = DIRECTION_PROMPTS[dir];
 
   let resultUrl;
   try {
+    const srcBuf = await downloadAsBuffer(image_url);
+    const { w, h } = pngSize(srcBuf);
+    const { ar, canvas, loc } = layout(dir, w, h);
+
     const output = await replicate.run(OUTPAINT_MODEL, {
       input: {
-        image: image_url,
-        prompt: promptText,
-        num_inference_steps: 25,
-        guidance_scale: 7.5,
+        image_url,
+        aspect_ratio: ar,
+        canvas_size: canvas,
+        original_image_size: [w, h],
+        original_image_location: loc,
+        prompt: DIRECTION_PROMPTS[dir],
+        preserve_alpha: false,
+        sync: true,
       },
     });
     const replicateUrl = pickReplicateUrl(output);

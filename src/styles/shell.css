@@ -11,8 +11,8 @@
   height: 100vh;
   position: sticky;
   top: 0;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent), var(--carvao);
-  border-right: 0.5px solid var(--border);
+  background: var(--carvao);
+  border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   z-index: var(--z-sidebar);
@@ -25,19 +25,15 @@
 }
 .sidebar-logo-text {
   font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 400;
-  font-size: 27px;
-  letter-spacing: -0.02em;
+  font-weight: 800;
+  font-size: 23px;
+  letter-spacing: -0.01em;
   color: var(--vazio);
   display: block;
   line-height: 1;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 }
-.sidebar-logo-text .fogo {
-  color: var(--fogo);
-  text-shadow: 0 0 18px var(--fogo-glow);
-}
+.sidebar-logo-text .fogo { color: var(--fogo); }
 .sidebar-logo-sub {
   font-family: var(--font-mono);
   font-size: 9px;
@@ -78,9 +74,8 @@
 .sidebar-company-item.active { background: rgba(255, 255, 255, 0.045); }
 .sidebar-company-dot {
   width: 8px; height: 8px;
-  border-radius: 50%;
+  border-radius: 0;
   flex-shrink: 0;
-  box-shadow: 0 0 8px currentColor;
 }
 .sidebar-company-name {
   font-size: 13px;
@@ -95,9 +90,7 @@
   position: absolute;
   left: 0; top: 6px; bottom: 6px;
   width: 2px;
-  border-radius: 2px;
   background: var(--fogo);
-  box-shadow: 0 0 10px var(--fogo-glow);
 }
 
 .sidebar-add-btn {
@@ -155,9 +148,9 @@
 }
 .sidebar-avatar {
   width: 32px; height: 32px;
-  border-radius: var(--r-sm);
-  background: linear-gradient(135deg, var(--fogo), var(--fogo-3));
-  color: #fff;
+  border-radius: 0;
+  background: var(--fogo);
+  color: #000;
   display: flex; align-items: center; justify-content: center;
   font-family: var(--font-head);
   font-weight: 700;
@@ -191,9 +184,8 @@
   align-items: center;
   gap: 14px;
   padding: 0 28px;
-  border-bottom: 0.5px solid var(--border);
-  background: rgba(8, 8, 9, 0.72);
-  backdrop-filter: blur(14px) saturate(120%);
+  border-bottom: 1px solid var(--border);
+  background: var(--breu);
 }
 .topbar-crumb { display: flex; align-items: center; gap: 9px; font-size: 13px; color: var(--cinza-medio); }
 .topbar-crumb svg { width: 15px; height: 15px; }
@@ -231,8 +223,7 @@
 .drawer-scrim {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(3px);
+  background: rgba(0, 0, 0, 0.7);
   z-index: calc(var(--z-sidebar) - 1);
 }
 

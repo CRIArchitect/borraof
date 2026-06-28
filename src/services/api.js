@@ -1,7 +1,9 @@
 import axios from "axios";
 import { storage } from "../util/storage";
 
-const baseURL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+// Fallback "/api" (mesmo domínio) — funciona em produção Vercel sem depender de
+// VITE_API_URL. Localmente, o .env.local define http://localhost:3000/api.
+const baseURL = import.meta.env.VITE_API_URL || "/api";
 
 if (import.meta.env.PROD && !import.meta.env.VITE_API_URL) {
   // eslint-disable-next-line no-console

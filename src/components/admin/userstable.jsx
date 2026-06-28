@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ShieldPlus, ShieldMinus, UserCheck, UserX } from "lucide-react";
+import { ShieldPlus, ShieldMinus, UserCheck, UserX, KeyRound } from "lucide-react";
 import { stagger, item } from "../../lib/motion";
 import Button from "../common/button";
 import Badge from "../common/badge";
 import EmptyState from "../common/emptystate";
+import SetPasswordModal from "./setpasswordmodal";
 import { adminService } from "../../services/adminservice";
 import { errMsg } from "../../services/api";
 import { useToast } from "../../context/toastcontext";
@@ -19,6 +20,7 @@ export default function UsersTable({ users = [], onUpdate }) {
   const toast = useToast();
   const confirm = useConfirm();
   const [loadingId, setLoadingId] = useState(null);
+  const [pwEmail, setPwEmail] = useState(null);
 
   async function handleToggleActive(user) {
     setLoadingId(user.id + ":active");
@@ -70,7 +72,10 @@ export default function UsersTable({ users = [], onUpdate }) {
     );
   }
 
+  const ordered = [...users].sort((a, b) => Number(a.is_active) - Number(b.is_active));
+
   return (
+    <>
     <div className="admin-table-wrap">
       <table className="admin-table">
         <thead>
@@ -83,7 +88,7 @@ export default function UsersTable({ users = [], onUpdate }) {
           </tr>
         </thead>
         <motion.tbody variants={stagger(0.04)} initial="hidden" animate="show">
-          {users.map((user) => {
+          {ordered.map((user) => {
             const activeBusy = loadingId === user.id + ":active";
             const adminBusy = loadingId === user.id + ":admin";
             return (
@@ -121,6 +126,15 @@ export default function UsersTable({ users = [], onUpdate }) {
                     >
                       {user.is_admin ? "Remover admin" : "Tornar admin"}
                     </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      disabled={activeBusy || adminBusy}
+                      icon={<KeyRound size={14} />}
+                      onClick={() => setPwEmail(user.email)}
+                    >
+                      Senha
+                    </Button>
                   </div>
                 </td>
               </motion.tr>
@@ -129,5 +143,7 @@ export default function UsersTable({ users = [], onUpdate }) {
         </motion.tbody>
       </table>
     </div>
+    <SetPasswordModal open={!!pwEmail} email={pwEmail} onClose={() => setPwEmail(null)} />
+    </>
   );
 }

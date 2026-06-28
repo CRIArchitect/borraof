@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { CompaniesProvider } from "../../context/companiescontext";
@@ -6,6 +6,7 @@ import { pageTransition } from "../../lib/motion";
 import Sidebar from "./sidebar";
 import Topbar from "./topbar";
 import CommandPalette from "./commandpalette";
+import LoadingState from "../common/loadingstate";
 
 export default function AppShell() {
   const location = useLocation();
@@ -35,17 +36,18 @@ export default function AppShell() {
           <Topbar onMenu={() => setDrawer(true)} />
           <main className="main-content">
             <div className="page-frame">
-              <AnimatePresence mode="wait">
+              {/* Keyed remount re-anima a entrada por rota. Sem AnimatePresence
+                  mode="wait" (que travava com lazy/Suspense → tela preta). */}
+              <Suspense fallback={<LoadingState />}>
                 <motion.div
                   key={location.pathname}
                   variants={pageTransition}
                   initial="hidden"
                   animate="show"
-                  exit="exit"
                 >
                   <Outlet />
                 </motion.div>
-              </AnimatePresence>
+              </Suspense>
             </div>
           </main>
         </div>

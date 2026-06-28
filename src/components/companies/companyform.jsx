@@ -17,16 +17,21 @@ const EMPTY = {
   name: "",
   segment: "",
   audience: "",
-  city: "",
   tone: "",
-  extra: "",
   color: COLOR_PALETTE[0],
+  description: "",
+  mission: "",
+  do_say: "",
+  dont_say: "",
+  example_post: "",
+  visual_style: "",
 };
 
 /**
  * CompanyForm — create / edit a brand.
- * Two columns: editable form on the left, live BrandPreview on the
- * right (collapses to one column on narrow screens).
+ * Coleta o DNA completo da marca (os campos que a IA realmente usa em
+ * buildCompanyContext) + cor da marca com seletor livre. Duas colunas:
+ * formulário à esquerda, BrandPreview ao vivo à direita.
  */
 export default function CompanyForm({ initial, companyId }) {
   const navigate = useNavigate();
@@ -64,10 +69,14 @@ export default function CompanyForm({ initial, companyId }) {
       name: form.name.trim(),
       segment: form.segment.trim(),
       audience: form.audience.trim(),
-      city: form.city.trim(),
       tone: form.tone,
-      extra: form.extra.trim(),
       color: form.color,
+      description: form.description.trim(),
+      mission: form.mission.trim(),
+      do_say: form.do_say.trim(),
+      dont_say: form.dont_say.trim(),
+      example_post: form.example_post.trim(),
+      visual_style: form.visual_style.trim(),
     };
 
     setSaving(true);
@@ -116,7 +125,7 @@ export default function CompanyForm({ initial, companyId }) {
       <motion.form
         className="company-form"
         onSubmit={handleSubmit}
-        variants={stagger(0.05)}
+        variants={stagger(0.04)}
         initial="hidden"
         animate="show"
         noValidate
@@ -126,7 +135,7 @@ export default function CompanyForm({ initial, companyId }) {
             label="Nome da empresa *"
             value={form.name}
             onChange={set("name")}
-            placeholder="Ex.: Studio Aurora"
+            placeholder="Ex.: Café Aurora"
             autoComplete="off"
             aria-invalid={errors.name ? "true" : undefined}
           />
@@ -142,24 +151,34 @@ export default function CompanyForm({ initial, companyId }) {
             label="Segmento"
             value={form.segment}
             onChange={set("segment")}
-            placeholder="Ex.: Moda autoral"
+            placeholder="Ex.: Cafeteria especializada"
             autoComplete="off"
           />
           <Input
-            label="Cidade"
-            value={form.city}
-            onChange={set("city")}
-            placeholder="Ex.: São Paulo"
+            label="Público-alvo"
+            value={form.audience}
+            onChange={set("audience")}
+            placeholder="Ex.: Jovens urbanos 25-40, SP"
             autoComplete="off"
           />
         </motion.div>
 
         <motion.div variants={item}>
+          <Textarea
+            label="Descrição da marca"
+            value={form.description}
+            onChange={set("description")}
+            rows={3}
+            placeholder="O que a marca faz, seus diferenciais, o que a torna única."
+          />
+        </motion.div>
+
+        <motion.div variants={item}>
           <Input
-            label="Público-alvo"
-            value={form.audience}
-            onChange={set("audience")}
-            placeholder="Ex.: Mulheres de 25 a 40, criativas"
+            label="Missão / propósito"
+            value={form.mission}
+            onChange={set("mission")}
+            placeholder="Ex.: Transformar a pausa do café no melhor momento do dia."
             autoComplete="off"
           />
         </motion.div>
@@ -184,37 +203,78 @@ export default function CompanyForm({ initial, companyId }) {
           </div>
         </motion.div>
 
-        <motion.div variants={item} className="field">
-          <span className="field-label" id="color-label">Cor da marca</span>
-          <div className="color-swatches" role="group" aria-labelledby="color-label">
-            {COLOR_PALETTE.map((hex) => {
-              const selected = form.color === hex;
-              return (
-                <button
-                  key={hex}
-                  type="button"
-                  className={"color-swatch" + (selected ? " selected" : "")}
-                  style={{ "--sw": hex }}
-                  aria-label={`Cor ${hex}`}
-                  aria-pressed={selected}
-                  onClick={() => set("color")(hex)}
-                >
-                  {selected && <Check aria-hidden strokeWidth={3} />}
-                </button>
-              );
-            })}
-          </div>
+        <motion.div variants={item} className="company-form-grid">
+          <Input
+            label="Vocabulário que USA"
+            value={form.do_say}
+            onChange={set("do_say")}
+            placeholder="aconchego, ritual, autoral…"
+            hint="Palavras e expressões da marca."
+            autoComplete="off"
+          />
+          <Input
+            label="Vocabulário que EVITA"
+            value={form.dont_say}
+            onChange={set("dont_say")}
+            placeholder="barato, instantâneo, genérico…"
+            hint="O que a marca nunca diria."
+            autoComplete="off"
+          />
+        </motion.div>
+
+        <motion.div variants={item}>
+          <Input
+            label="Estilo visual (para imagens)"
+            value={form.visual_style}
+            onChange={set("visual_style")}
+            placeholder="Ex.: fotografia natural, luz quente, tons terrosos, madeira."
+            hint="Guia o estúdio de imagem."
+            autoComplete="off"
+          />
         </motion.div>
 
         <motion.div variants={item}>
           <Textarea
-            label="Informações extras"
-            value={form.extra}
-            onChange={set("extra")}
-            rows={4}
-            placeholder="Diferenciais, valores, restrições de linguagem, palavras a evitar…"
-            hint="Tudo isso ajuda a IA a escrever no tom exato da marca."
+            label="Exemplo de post que deu certo"
+            value={form.example_post}
+            onChange={set("example_post")}
+            rows={3}
+            placeholder="Cole um post de referência — a IA aprende o estilo a partir dele."
+            hint="Opcional, mas melhora muito o resultado."
           />
+        </motion.div>
+
+        <motion.div variants={item} className="field">
+          <span className="field-label" id="color-label">Cor da marca</span>
+          <div className="color-row" role="group" aria-labelledby="color-label">
+            <div className="color-swatches">
+              {COLOR_PALETTE.map((hex) => {
+                const selected = form.color?.toLowerCase() === hex.toLowerCase();
+                return (
+                  <button
+                    key={hex}
+                    type="button"
+                    className={"color-swatch" + (selected ? " selected" : "")}
+                    style={{ "--sw": hex }}
+                    aria-label={`Cor ${hex}`}
+                    aria-pressed={selected}
+                    onClick={() => set("color")(hex)}
+                  >
+                    {selected && <Check aria-hidden strokeWidth={3} />}
+                  </button>
+                );
+              })}
+            </div>
+            <label className="color-custom" title="Escolher cor personalizada">
+              <input
+                type="color"
+                value={form.color || "#FC4B08"}
+                onChange={set("color")}
+                aria-label="Cor personalizada"
+              />
+              <span className="mono">{(form.color || "").toUpperCase()}</span>
+            </label>
+          </div>
         </motion.div>
 
         <motion.div variants={item} className="company-form-actions">

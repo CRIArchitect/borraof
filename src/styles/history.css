@@ -77,9 +77,7 @@
   width: 100%;
   text-align: left;
   padding: var(--s-5);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent),
-    var(--surface);
+  background: var(--surface);
   border: 0.5px solid var(--border);
   border-radius: var(--r-lg);
   cursor: pointer;
@@ -93,21 +91,19 @@
   position: absolute;
   inset: 0 0 auto 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--fogo-dim-2), transparent);
+  background: var(--fogo);
   opacity: 0;
   transition: opacity var(--d-mid) var(--ease-out-quint);
 }
 .hist-card:hover {
   border-color: var(--border-strong);
-  background:
-    linear-gradient(180deg, rgba(252, 75, 8, 0.04), transparent),
-    var(--surface-2);
+  background: var(--surface-2);
 }
 .hist-card:hover::before { opacity: 1; }
 .hist-card:focus-visible {
   outline: none;
   border-color: var(--fogo);
-  box-shadow: 0 0 0 1px var(--fogo-dim), var(--glow-fogo);
+  box-shadow: 0 0 0 1px var(--fogo);
 }
 
 .hist-card-top {

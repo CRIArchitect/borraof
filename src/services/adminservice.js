@@ -21,6 +21,11 @@ export const adminService = {
     return data;
   },
 
+  async setPassword(email, password) {
+    const { data } = await api.post("/admin/users/set-password", { email, password });
+    return data;
+  },
+
   async waitlist() {
     const { data } = await api.get("/admin/waitlist");
     return data;

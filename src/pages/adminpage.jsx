@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { LayoutGrid, Users, Clock, KeyRound, Database } from "lucide-react";
+import { LayoutGrid, Users, LifeBuoy, KeyRound, Database } from "lucide-react";
 import PageHeader from "../components/layout/pageheader";
 import Skeleton from "../components/common/skeleton";
 import AdminTabs from "../components/admin/admintabs";
 import AdminStats from "../components/admin/adminstats";
 import UsersTable from "../components/admin/userstable";
-import WaitlistTable from "../components/admin/waitlisttable";
+import RecoveryTable from "../components/admin/recoverytable";
 import KeysTable from "../components/admin/keystable";
 import DbViewer from "../components/admin/dbviewer";
 import { adminService } from "../services/adminservice";
@@ -17,7 +17,7 @@ import { blurIn } from "../lib/motion";
 const TABS = [
   { id: "overview", label: "Visão geral", icon: LayoutGrid },
   { id: "users", label: "Usuários", icon: Users },
-  { id: "waitlist", label: "Waitlist", icon: Clock },
+  { id: "recovery", label: "Recuperação de senha", icon: LifeBuoy },
   { id: "keys", label: "Chaves", icon: KeyRound },
   { id: "data", label: "Dados", icon: Database },
 ];
@@ -28,7 +28,7 @@ export default function AdminPage() {
 
   const [stats, setStats] = useState(null);
   const [users, setUsers] = useState([]);
-  const [waitlist, setWaitlist] = useState([]);
+  const [recoveries, setRecoveries] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -55,9 +55,9 @@ export default function AdminPage() {
       }
 
       if (w.status === "fulfilled") {
-        setWaitlist(Array.isArray(w.value) ? w.value : w.value?.waitlist || []);
+        setRecoveries(Array.isArray(w.value) ? w.value : w.value?.waitlist || []);
       } else {
-        toast.error("Falha ao carregar waitlist", errMsg(w.reason));
+        toast.error("Falha ao carregar pedidos", errMsg(w.reason));
       }
 
       setLoading(false);
@@ -72,14 +72,16 @@ export default function AdminPage() {
     setUsers((list) => list.map((u) => (u.id === id ? { ...u, ...updated } : u)));
   }
 
-  function updateWaitlist(id, status) {
-    setWaitlist((list) => list.map((e) => (e.id === id ? { ...e, status } : e)));
+  function updateRecovery(id, status, remove) {
+    setRecoveries((list) =>
+      remove ? list.filter((e) => e.id !== id) : list.map((e) => (e.id === id ? { ...e, status } : e))
+    );
   }
 
-  const pendingCount = waitlist.filter((e) => (e.status || "pending") === "pending").length;
+  const inactiveCount = users.filter((u) => !u.is_active).length;
   const resolvedStats = stats || {
     users: users.length,
-    waitlist: waitlist.length,
+    waitlist: recoveries.length,
   };
 
   return (
@@ -126,9 +128,9 @@ export default function AdminPage() {
                     </p>
                   </div>
                   <div className="admin-overview-card">
-                    <h4>Lista de espera</h4>
+                    <h4>Aguardando aprovação</h4>
                     <p>
-                      <strong>{pendingCount}</strong> pendente(s) de {waitlist.length} solicitação(ões)
+                      <strong>{inactiveCount}</strong> conta(s) aguardando liberação
                     </p>
                   </div>
                   <div className="admin-overview-card">
@@ -158,9 +160,9 @@ export default function AdminPage() {
                 </div>
               )}
 
-              {tab === "waitlist" && (
+              {tab === "recovery" && (
                 <div className="admin-panel">
-                  <WaitlistTable entries={waitlist} onUpdate={updateWaitlist} />
+                  <RecoveryTable entries={recoveries} onUpdate={updateRecovery} />
                 </div>
               )}
 

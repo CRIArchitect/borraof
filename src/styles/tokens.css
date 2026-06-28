@@ -1,30 +1,30 @@
 /* ═══════════════════════════════════════════════════════════════
-   BORRÃO — Design tokens
-   Built on the original identity: pure-black canvas, fogo orange,
-   Cormorant / Syne / DM Sans. Enriched with depth, motion & scale.
+   BORRÃO — Design tokens · estética "desborrar" (técnica/editorial)
+   Preto puro + laranja · Orbitron · fios de 1px · cantos retos · Δ.
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── Canvas & surfaces (layered depth) ── */
+  /* ── Canvas & surfaces (preto + quase-preto chapado) ── */
   --abismo: #000000;
-  --breu: #060607;
-  --carvao: #0d0d0f;
-  --surface: #111114;
-  --surface-2: #17171b;
-  --surface-3: #202026;
-  --grafite: #2c2c32;
+  --breu: #050505;
+  --carvao: #0a0a0a;
+  --surface: #0a0a0a;
+  --surface-2: #0e0e0e;
+  --surface-3: #151515;
+  --grafite: #2a2a2a;
 
   /* ── Text ── */
   --vazio: #ffffff;
   --nevoa: #ededf0;
   --prata: #c7c7cd;
-  --cinza-medio: #8a8a91;
-  --cinza-fraco: #5c5c63;
+  --cinza-medio: #9a9a9a;
+  --cinza-fraco: #555555;
 
   /* ── Signature accent: fogo ── */
   --fogo: #fc4b08;
   --fogo-2: #ff7a3d;
   --fogo-3: #ffa46b;
+  --fogo-deep: #e85d04;
   --fogo-dim: rgba(252, 75, 8, 0.12);
   --fogo-dim-2: rgba(252, 75, 8, 0.18);
   --fogo-glow: rgba(252, 75, 8, 0.40);
@@ -37,20 +37,20 @@
   --ceu: #74c0fc;
   --orquidea: #c77dff;
 
-  /* ── Borders ── */
-  --border: rgba(255, 255, 255, 0.07);
-  --border-2: rgba(255, 255, 255, 0.11);
-  --border-strong: rgba(255, 255, 255, 0.16);
-  --hairline: rgba(255, 255, 255, 0.05);
+  /* ── Borders (fios sólidos) ── */
+  --border: #1c1c1c;
+  --border-2: #262626;
+  --border-strong: #323232;
+  --hairline: #141414;
 
-  /* ── Radii ── */
-  --r-xs: 6px;
-  --r-sm: 8px;
-  --r-md: 12px;
-  --r-lg: 16px;
-  --r-xl: 22px;
-  --r-full: 999px;
-  --radius: var(--r-sm); /* legacy alias */
+  /* ── Radii (cantos retos) ── */
+  --r-xs: 0px;
+  --r-sm: 0px;
+  --r-md: 0px;
+  --r-lg: 0px;
+  --r-xl: 0px;
+  --r-full: 999px; /* só para pontos/avatares circulares */
+  --radius: 0px;
 
   /* ── Spacing scale (4pt) ── */
   --s-1: 4px;
@@ -65,18 +65,18 @@
   --s-10: 72px;
 
   /* ── Typography ── */
-  --font-display: "Cormorant Garamond", Georgia, serif;
-  --font-head: "Syne", system-ui, sans-serif;
+  --font-display: "Syne", system-ui, sans-serif;   /* marca / Δ */
+  --font-head: "Orbitron", system-ui, sans-serif;  /* títulos técnicos */
   --font-body: "DM Sans", system-ui, sans-serif;
   --font-mono: "Space Mono", "SF Mono", ui-monospace, monospace;
 
-  /* ── Shadows & glows ── */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.7);
-  --shadow-lg: 0 24px 60px -16px rgba(0, 0, 0, 0.85);
-  --shadow-pop: 0 30px 80px -20px rgba(0, 0, 0, 0.9);
-  --glow-fogo: 0 0 0 1px rgba(252, 75, 8, 0.25), 0 8px 30px -6px var(--fogo-glow);
-  --inset-hi: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  /* ── Shadows (secos; quase sem glow) ── */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 10px 30px -12px rgba(0, 0, 0, 0.8);
+  --shadow-lg: 0 24px 60px -16px rgba(0, 0, 0, 0.9);
+  --shadow-pop: 0 30px 80px -20px rgba(0, 0, 0, 0.95);
+  --glow-fogo: 0 0 0 1px var(--fogo);
+  --inset-hi: none;
 
   /* ── Motion ── */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);

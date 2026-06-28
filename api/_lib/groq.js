@@ -6,6 +6,6 @@ if (!apiKey) {
   console.error("[Borrão] GROQ_API_KEY ausente.");
 }
 
-export const groq = new Groq({ apiKey });
+export const groq = new Groq({ apiKey: apiKey || "placeholder-key" });
 
-export const GROQ_MODEL = "llama-3.3-70b-versatile";
+export const GROQ_MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";

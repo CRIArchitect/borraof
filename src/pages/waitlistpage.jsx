@@ -25,8 +25,8 @@ export default function WaitlistPage() {
         <h1 className="waitlist-title">Você está na fila</h1>
 
         <p className="waitlist-text">
-          Recebemos sua solicitação. Assim que seu acesso ao Borrão for
-          liberado, avisaremos por e-mail. O contorno está quase nítido.
+          Recebemos sua solicitação. Assim que um administrador liberar seu
+          acesso, você poderá entrar com seu e-mail e senha. O contorno está quase nítido.
         </p>
 
         <Link className="auth-back" to="/login">
