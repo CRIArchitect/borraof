@@ -164,7 +164,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <footer className="lp-footer">Borr<b>ã</b>o · by CRÏΔ · Grupo BMZ © {new Date().getFullYear()}</footer>
+      <footer className="lp-footer">Borr<b>ã</b>o · by CRÏΔ © {new Date().getFullYear()}</footer>
     </div>
   );
 }
