@@ -218,9 +218,9 @@ export default function LoginPage() {
       </form>
 
       <p className="auth-foot">
-        Ainda não tem acesso?{" "}
+        Ainda não tem conta?{" "}
         <Link className="auth-link" to="/register">
-          Solicitar acesso
+          Criar conta
         </Link>
       </p>
     </AuthShell>

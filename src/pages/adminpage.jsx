@@ -128,9 +128,9 @@ export default function AdminPage() {
                     </p>
                   </div>
                   <div className="admin-overview-card">
-                    <h4>Aguardando aprovação</h4>
+                    <h4>Contas inativas</h4>
                     <p>
-                      <strong>{inactiveCount}</strong> conta(s) aguardando liberação
+                      <strong>{inactiveCount}</strong> conta(s) desativada(s)
                     </p>
                   </div>
                   <div className="admin-overview-card">

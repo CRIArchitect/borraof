@@ -56,7 +56,7 @@ async function login(req, res) {
   }
 
   if (!user.is_active) {
-    return res.status(403).json({ detail: "Sua conta ainda não foi liberada por um administrador." });
+    return res.status(403).json({ detail: "Sua conta está desativada. Fale com o administrador." });
   }
 
   const ok = bcrypt.compareSync(password, user.password);
@@ -110,10 +110,10 @@ async function register(req, res) {
       name: String(name).trim(),
       email: cleanEmail,
       password: hash,
-      is_active: false,
+      is_active: true,
       is_admin: false,
     })
-    .select("id, name, email")
+    .select("id, name, email, is_admin")
     .single();
 
   if (inserted.error) {
@@ -121,11 +121,14 @@ async function register(req, res) {
     return res.status(500).json({ detail: "Erro ao criar conta" });
   }
 
-  // Sem token: a conta nasce inativa e só é liberada quando um admin a ativa.
+  // Cadastro direto: a conta nasce ativa e já entra (token de login).
+  const user = inserted.data;
+  const token = signToken({ id: user.id, email: user.email, is_admin: user.is_admin });
   return res.status(201).json({
-    pending: true,
-    name: inserted.data.name,
-    email: inserted.data.email,
+    token,
+    name: user.name,
+    email: user.email,
+    is_admin: user.is_admin,
   });
 }
 
