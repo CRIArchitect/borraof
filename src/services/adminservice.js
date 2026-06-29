@@ -1,5 +1,6 @@
 import api from "./api";
 
+// A Vercel só roteia 1 segmento pro catch-all do admin → id/op/table vão na query.
 export const adminService = {
   async stats() {
     const { data } = await api.get("/admin/stats");
@@ -12,17 +13,17 @@ export const adminService = {
   },
 
   async toggleUserActive(id) {
-    const { data } = await api.patch(`/admin/users/${id}/toggle-active`);
+    const { data } = await api.patch(`/admin/users?id=${id}&op=toggle-active`);
     return data;
   },
 
   async toggleUserAdmin(id) {
-    const { data } = await api.patch(`/admin/users/${id}/toggle-admin`);
+    const { data } = await api.patch(`/admin/users?id=${id}&op=toggle-admin`);
     return data;
   },
 
   async setPassword(email, password) {
-    const { data } = await api.post("/admin/users/set-password", { email, password });
+    const { data } = await api.post("/admin/users?op=set-password", { email, password });
     return data;
   },
 
@@ -32,12 +33,12 @@ export const adminService = {
   },
 
   async approveWaitlist(id) {
-    const { data } = await api.post(`/admin/waitlist/${id}/approve`);
+    const { data } = await api.post(`/admin/waitlist?id=${id}&op=approve`);
     return data;
   },
 
   async rejectWaitlist(id) {
-    await api.delete(`/admin/waitlist/${id}`);
+    await api.delete(`/admin/waitlist?id=${id}`);
   },
 
   async keys() {
@@ -51,7 +52,7 @@ export const adminService = {
   },
 
   async deleteKey(id) {
-    await api.delete(`/admin/keys/${id}`);
+    await api.delete(`/admin/keys?id=${id}`);
   },
 
   async verifications() {
@@ -60,12 +61,12 @@ export const adminService = {
   },
 
   async dbCompanies() {
-    const { data } = await api.get("/admin/db/companies");
+    const { data } = await api.get("/admin/db?table=companies");
     return data;
   },
 
   async dbGenerations() {
-    const { data } = await api.get("/admin/db/generations");
+    const { data } = await api.get("/admin/db?table=generations");
     return data;
   },
 };

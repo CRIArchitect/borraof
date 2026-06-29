@@ -19,17 +19,23 @@ export default async function handler(req, res) {
     return res.status(403).json({ detail: "Acesso restrito a administradores" });
   }
 
-  // A Vercel nem sempre popula req.query.path no catch-all → derivamos da URL.
-  let path = [];
+  // A Vercel só roteia 1 segmento pro catch-all (paths profundos dão NOT_FOUND) e
+  // nem sempre popula req.query.path. Então: `resource` = único segmento do path
+  // (derivado da URL), e id/op/table vêm da QUERY STRING. O fallback p/ segmentos
+  // do path mantém o servidor de dev local funcionando.
+  let segs = [];
   const raw = req.query.path;
-  if (Array.isArray(raw) && raw.length) path = raw;
-  else if (typeof raw === "string" && raw) path = raw.split("/").filter(Boolean);
+  if (Array.isArray(raw) && raw.length) segs = raw;
+  else if (typeof raw === "string" && raw) segs = raw.split("/").filter(Boolean);
   else {
     let u = (req.url || "").split("?")[0].replace(/^\/+/, "");
     u = u.replace(/^api\//, "").replace(/^admin\/?/, "");
-    path = u ? u.split("/").filter(Boolean) : [];
+    segs = u ? u.split("/").filter(Boolean) : [];
   }
-  const [resource, id, action] = path;
+  const resource = segs[0];
+  const id = req.query.id || segs[1];
+  const action = req.query.op || segs[2];
+  const table = req.query.table || segs[1];
   const m = req.method;
 
   try {
@@ -52,7 +58,7 @@ export default async function handler(req, res) {
         if (r.error) throw r.error;
         return res.status(200).json(r.data || []);
       }
-      if (id === "set-password" && m === "POST") {
+      if (action === "set-password" && m === "POST") {
         const { email, password } = req.body || {};
         if (!email || !password) return res.status(400).json({ detail: "Email e senha são obrigatórios" });
         if (String(password).length < 6) return res.status(400).json({ detail: "Senha deve ter ao menos 6 caracteres" });
@@ -121,14 +127,14 @@ export default async function handler(req, res) {
 
     // ── DB VIEWER ──
     if (resource === "db" && m === "GET") {
-      const table = id === "generations" ? "generations" : id === "companies" ? "companies" : null;
-      if (!table) return res.status(404).json({ detail: "Tabela inválida" });
-      const r = await supabase.from(table).select("*").order("created_at", { ascending: false }).limit(100);
+      const tbl = table === "generations" ? "generations" : table === "companies" ? "companies" : null;
+      if (!tbl) return res.status(404).json({ detail: "Tabela inválida" });
+      const r = await supabase.from(tbl).select("*").order("created_at", { ascending: false }).limit(100);
       if (r.error) throw r.error;
       return res.status(200).json(r.data || []);
     }
 
-    return res.status(404).json({ detail: `Rota admin desconhecida: /${path.join("/")}`, _u: req.url || null });
+    return res.status(404).json({ detail: `Rota admin desconhecida: /${segs.join("/")}` });
   } catch (err) {
     console.error("[admin]", err);
     return res.status(500).json({ detail: "Erro no admin: " + err.message });
