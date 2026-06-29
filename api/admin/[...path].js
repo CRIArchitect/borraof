@@ -19,8 +19,16 @@ export default async function handler(req, res) {
     return res.status(403).json({ detail: "Acesso restrito a administradores" });
   }
 
+  // A Vercel nem sempre popula req.query.path no catch-all → derivamos da URL.
+  let path = [];
   const raw = req.query.path;
-  const path = Array.isArray(raw) ? raw : raw ? [raw] : [];
+  if (Array.isArray(raw) && raw.length) path = raw;
+  else if (typeof raw === "string" && raw) path = raw.split("/").filter(Boolean);
+  else {
+    let u = (req.url || "").split("?")[0].replace(/^\/+/, "");
+    u = u.replace(/^api\//, "").replace(/^admin\/?/, "");
+    path = u ? u.split("/").filter(Boolean) : [];
+  }
   const [resource, id, action] = path;
   const m = req.method;
 
@@ -120,7 +128,7 @@ export default async function handler(req, res) {
       return res.status(200).json(r.data || []);
     }
 
-    return res.status(404).json({ detail: `Rota admin desconhecida: /${path.join("/")}` });
+    return res.status(404).json({ detail: `Rota admin desconhecida: /${path.join("/")}`, _u: req.url || null });
   } catch (err) {
     console.error("[admin]", err);
     return res.status(500).json({ detail: "Erro no admin: " + err.message });
