@@ -337,16 +337,61 @@
   .admin-skel-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 600px) {
   .admin-stats,
   .admin-skel-grid { grid-template-columns: 1fr; }
   .admin-panel { padding: var(--s-4); }
   .admin-stat-value { font-size: 1.8rem; }
+
+  /* abas: só ícone (label aparece na ativa) — evita corte e rolagem */
+  .admin-tab { padding: var(--s-2) var(--s-3); font-size: 0.78rem; }
+  .admin-tab-label { display: none; }
+  .admin-tab.active .admin-tab-label { display: inline; }
+
+  /* tabelas viram cards empilhados — sem rolagem lateral */
+  .admin-table-wrap { overflow-x: visible; border: none; border-radius: 0; }
+  .admin-table { min-width: 0; font-size: 0.86rem; }
+  .admin-table thead { display: none; }
+  .admin-table tbody,
+  .admin-table tbody tr,
+  .admin-table tbody td { display: block; width: 100%; }
+  .admin-table tbody tr {
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    padding: var(--s-2) var(--s-3);
+    margin-bottom: var(--s-3);
+  }
+  .admin-table tbody tr:last-child { margin-bottom: 0; }
+  .admin-table tbody tr:hover { background: var(--surface-2); }
+  .admin-table tbody td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    min-width: 0;
+    padding: var(--s-2) 0;
+    border-bottom: 1px solid var(--hairline);
+    text-align: right;
+  }
+  .admin-table tbody td:last-child { border-bottom: none; }
+  .admin-table tbody td::before {
+    content: attr(data-label);
+    flex: 0 0 auto;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--cinza-fraco);
+    text-align: left;
+  }
+  .admin-table td.admin-db-cell { max-width: none; white-space: normal; word-break: break-word; }
+  /* célula de ações: vira bloco, botões à esquerda */
+  .admin-table tbody td:has(.admin-cell-actions) { display: block; text-align: left; }
+  .admin-table tbody td:has(.admin-cell-actions)::before { display: none; }
+  .admin-cell-actions { justify-content: flex-start; margin-top: var(--s-2); }
+  .admin-badges { justify-content: flex-end; }
 }
 
 @media (max-width: 360px) {
-  .admin-tab { padding: var(--s-2) var(--s-3); font-size: 0.76rem; }
-  .admin-tab-label { display: none; }
-  .admin-tab.active .admin-tab-label { display: inline; }
   .admin-panel { padding: var(--s-3); }
 }

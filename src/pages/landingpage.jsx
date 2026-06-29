@@ -56,6 +56,15 @@ export default function LandingPage() {
     el.style.setProperty("--my", `${e.clientY - r.top}px`);
   }
 
+  function onTouch(e) {
+    const el = heroRef.current;
+    const t = e.touches && e.touches[0];
+    if (!el || !t) return;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty("--mx", `${t.clientX - r.left}px`);
+    el.style.setProperty("--my", `${t.clientY - r.top}px`);
+  }
+
   return (
     <div className="lp">
       <nav className="lp-nav">
@@ -69,7 +78,7 @@ export default function LandingPage() {
       </nav>
 
       {/* HERO — desborrar */}
-      <header className="lp-hero" ref={heroRef} onMouseMove={onMove}>
+      <header className="lp-hero" ref={heroRef} onMouseMove={onMove} onTouchStart={onTouch} onTouchMove={onTouch}>
         <div className="lp-field lp-field-blur" aria-hidden><span>BORRÃO</span></div>
         <div className="lp-field lp-field-sharp" aria-hidden><span>BORRÃO</span></div>
         <div className="lp-lens" aria-hidden />
@@ -87,7 +96,7 @@ export default function LandingPage() {
           </div>
         </div>
 
-        <div className="lp-scroll">Passe o cursor — desborre</div>
+        <div className="lp-scroll">Desborre a marca</div>
       </header>
 
       {/* PROBLEMA */}

@@ -88,7 +88,8 @@
   background: radial-gradient(circle, rgba(252, 75, 8, 0.18), transparent 60%);
   transition: opacity 0.4s; opacity: 0;
 }
-.lp-hero:hover .lp-lens { opacity: 1; }
+.lp-hero:hover .lp-lens,
+.lp-hero:active .lp-lens { opacity: 1; }
 
 .lp-hero .lp-wrap { position: relative; z-index: 1; }
 .lp-tag {

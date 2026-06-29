@@ -116,7 +116,7 @@ export default function DbViewer() {
               {rows.map((row, i) => (
                 <motion.tr key={row?.id ?? i} variants={item}>
                   {columns.map((col) => (
-                    <td key={col} className="admin-db-cell" title={formatCell(row?.[col])}>
+                    <td key={col} className="admin-db-cell" data-label={col} title={formatCell(row?.[col])}>
                       {formatCell(row?.[col])}
                     </td>
                   ))}

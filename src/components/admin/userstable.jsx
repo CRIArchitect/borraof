@@ -93,10 +93,10 @@ export default function UsersTable({ users = [], onUpdate }) {
             const adminBusy = loadingId === user.id + ":admin";
             return (
               <motion.tr key={user.id} variants={item}>
-                <td className="cell-strong">{user.name || "—"}</td>
-                <td className="cell-mono">{user.email}</td>
-                <td className="cell-mono">{formatDate(user.created_at)}</td>
-                <td>
+                <td className="cell-strong" data-label="Nome">{user.name || "—"}</td>
+                <td className="cell-mono" data-label="E-mail">{user.email}</td>
+                <td className="cell-mono" data-label="Cadastro">{formatDate(user.created_at)}</td>
+                <td data-label="Status">
                   <span className="admin-badges">
                     <Badge tone={user.is_active ? "active" : "inactive"}>
                       {user.is_active ? "Ativo" : "Inativo"}
@@ -104,7 +104,7 @@ export default function UsersTable({ users = [], onUpdate }) {
                     {user.is_admin && <Badge tone="admin">Admin</Badge>}
                   </span>
                 </td>
-                <td>
+                <td data-label="Ações">
                   <div className="admin-cell-actions">
                     <Button
                       variant={user.is_active ? "ghost" : "secondary"}

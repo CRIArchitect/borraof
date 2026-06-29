@@ -95,12 +95,12 @@ export default function RecoveryTable({ entries = [], onUpdate }) {
                 const isPending = status === "pending";
                 return (
                   <motion.tr key={entry.id} variants={item}>
-                    <td className="cell-mono">{entry.email}</td>
-                    <td className="cell-mono">{formatDate(entry.created_at)}</td>
-                    <td>
+                    <td className="cell-mono" data-label="E-mail">{entry.email}</td>
+                    <td className="cell-mono" data-label="Solicitado">{formatDate(entry.created_at)}</td>
+                    <td data-label="Status">
                       <Badge tone={meta.tone}>{meta.label}</Badge>
                     </td>
-                    <td>
+                    <td data-label="Ações">
                       <div className="admin-cell-actions">
                         {isPending && (
                           <Button
